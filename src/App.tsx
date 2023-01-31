@@ -10,6 +10,7 @@ import {
 import "@pankod/refine-antd/dist/reset.css";
 
 import dataProvider from "@pankod/refine-simple-rest";
+import { AntdInferencer } from "@pankod/refine-inferencer/antd";
 import routerProvider from "@pankod/refine-react-router-v6";
 
 function App() {
@@ -21,6 +22,15 @@ function App() {
       ReadyPage={ReadyPage}
       catchAll={<ErrorComponent />}
       routerProvider={routerProvider}
+      resources={[
+        {
+          name: "products",
+          list: AntdInferencer,
+          show: AntdInferencer,
+          create: AntdInferencer,
+          edit: AntdInferencer,
+        },
+      ]}
     />
   );
 }
