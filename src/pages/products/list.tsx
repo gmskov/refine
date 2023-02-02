@@ -3,6 +3,7 @@ import {
   IResourceComponentsProps,
   BaseRecord,
   useMany,
+  useNavigation,
 } from "@pankod/refine-core";
 import {
   useTable,
@@ -32,9 +33,17 @@ export const ProductList: React.FC<IResourceComponentsProps> = () => {
     resource: "categories",
   });
 
+  const { show } = useNavigation();
+
   return (
     <List>
-      <Table {...tableProps} rowKey="id">
+      <Table {...tableProps} rowKey="id"
+             onRow={(record, rowIndex) => {
+               return {
+                 onClick: event => show("products", record.id || '')
+               };
+             }}
+      >
         <Table.Column dataIndex="id" title="Id" sorter />
         <Table.Column dataIndex="name" title="Name" sorter={{ multiple: 1 }} />
         <Table.Column dataIndex="material" title="Material" />
