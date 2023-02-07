@@ -1,13 +1,13 @@
 import React from "react";
-import { IResourceComponentsProps, useShow, useOne } from "@pankod/refine-core";
+import { IResourceComponentsProps, useShow, useOne, useList } from '@pankod/refine-core'
 import {
   Show,
   Typography,
   NumberField,
-  TagField,
   TextField,
   MarkdownField,
 } from "@pankod/refine-antd";
+import { Link } from '@pankod/refine-react-router-v6'
 
 const { Title } = Typography;
 
@@ -16,6 +16,13 @@ export const ProductShow: React.FC<IResourceComponentsProps> = () => {
   const { data, isLoading } = queryResult;
 
   const record = data?.data;
+  const usersList = useList({
+    resource: "users",
+    config: {
+      hasPagination: false,
+    }
+  });
+  const author = usersList?.data?.data.find(el => el.id === record?.author);
 
   const { data: categoryData, isLoading: categoryIsLoading } = useOne({
     resource: "categories",
@@ -43,6 +50,15 @@ export const ProductShow: React.FC<IResourceComponentsProps> = () => {
       ) : (
         <>{categoryData?.data?.title}</>
       )}
+      {
+        record?.author ? (
+          <>
+            <Title level={5}>Author</Title>
+            <Link to={`/users/show/${record?.author}`}>{`${author?.firstName} ${author?.lastName}`}</Link>
+          </>
+        ) : (<></>)
+      }
+
     </Show>
   );
 };

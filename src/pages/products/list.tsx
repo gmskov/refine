@@ -3,18 +3,18 @@ import {
   IResourceComponentsProps,
   BaseRecord,
   useMany,
-  useNavigation,
-} from "@pankod/refine-core";
+  useNavigation
+} from '@pankod/refine-core'
 import {
   useTable,
   List,
   Table,
   Space,
   EditButton,
-  ShowButton,
   MarkdownField,
 } from "@pankod/refine-antd";
 import { DeleteButton, FilterDropdown, Select, useSelect } from "@pankod/refine-antd";
+import { Link } from '@pankod/refine-react-router-v6'
 
 export const ProductList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps } = useTable({
@@ -29,18 +29,25 @@ export const ProductList: React.FC<IResourceComponentsProps> = () => {
     },
   });
 
+  const { data: userData, isLoading: userIsLoading }  = useMany({
+    resource: "users",
+    ids: tableProps?.dataSource?.map((item) => item?.author?.id) ?? [],
+  });
+
   const { selectProps: categorySelectProps } = useSelect({
     resource: "categories",
   });
 
-  const { show } = useNavigation();
+  const { show, edit } = useNavigation();
 
   return (
     <List>
       <Table {...tableProps} rowKey="id"
-             onRow={(record, rowIndex) => {
+             onRow={({id}) => {
                return {
-                 onClick: event => show("products", record.id || '')
+                 onClick: () => {
+                   show("products", id ?? '')
+                 }
                };
              }}
       >
@@ -55,6 +62,26 @@ export const ProductList: React.FC<IResourceComponentsProps> = () => {
           )}
         />
         <Table.Column dataIndex="price" title="Price" />
+        <Table.Column
+          dataIndex={["author"]}
+          title="Author"
+          render={(value) => {
+              const user = userData?.data?.find(
+                (item) => item.id === value,
+              )
+
+              return userIsLoading ? (
+                <>Loading...</>
+              ) : (
+                user?.id ?
+                <Link onClick={(e) => e.stopPropagation()} to={`/users/show/${user?.id}`}>{`${user?.firstName} ${user?.lastName}`}</Link>
+                  : <></>
+              )
+            }
+          }
+        />
+
+
         <Table.Column
           dataIndex={["category", "id"]}
           title="Category"
@@ -87,11 +114,10 @@ export const ProductList: React.FC<IResourceComponentsProps> = () => {
                 hideText
                 size="small"
                 recordItemId={record.id}
-              />
-              <ShowButton
-                hideText
-                size="small"
-                recordItemId={record.id}
+                onClick={event => {
+                  edit("products", record.id ?? '')
+                  event.stopPropagation()
+                }}
               />
               <DeleteButton
                 hideText

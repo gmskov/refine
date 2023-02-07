@@ -15,7 +15,9 @@ import { ProductList } from "pages/products/list";
 import { ProductEdit } from "pages/products/edit";
 import { ProductShow } from "pages/products/show";
 import { ProductCreate } from "pages/products/create";
+import { PostList } from "pages/posts/list";
 import authProvider from "./authProvider";
+import { AntdInferencer } from "@pankod/refine-inferencer/antd";
 
 function App() {
   return (
@@ -52,6 +54,22 @@ function App() {
           show: ProductShow,
           create: ProductCreate,
           edit: ProductEdit,
+          canDelete: true,
+        },
+        {
+          name: "users",
+          list: AntdInferencer,
+          show: AntdInferencer,
+          create: AntdInferencer,
+          edit: AntdInferencer,
+          canDelete: true,
+        },
+        {
+          name: "posts",
+          list: PostList,
+          show: AntdInferencer,
+          create: AntdInferencer,
+          edit: AntdInferencer,
           canDelete: true,
         },
       ]}

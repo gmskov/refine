@@ -1,18 +1,31 @@
 import React from "react";
-import { IResourceComponentsProps } from "@pankod/refine-core";
+import { IResourceComponentsProps, useList } from '@pankod/refine-core'
 import {
   Edit,
   Form,
   useForm,
   Input,
   useSelect,
-  Select,
-} from "@pankod/refine-antd";
+  Select
+} from '@pankod/refine-antd'
 
 export const ProductEdit: React.FC<IResourceComponentsProps> = () => {
   const { formProps, saveButtonProps, queryResult } = useForm();
+  const usersList = useList({
+    resource: "users",
+    config: {
+      hasPagination: false,
+    }
+  });
 
   const productsData = queryResult?.data?.data;
+
+  const authorListData = usersList?.data?.data.map(el => {
+    return {
+      label: `${el.firstName} ${el.lastName}`,
+      value: el.id,
+    }
+  });
 
   const { selectProps: categorySelectProps } = useSelect({
     resource: "categories",
@@ -87,6 +100,18 @@ export const ProductEdit: React.FC<IResourceComponentsProps> = () => {
           ]}
         >
           <Select {...categorySelectProps} />
+        </Form.Item>
+
+        <Form.Item
+          label="Author"
+          name={"author"}
+          rules={[
+            {
+              required: false,
+            },
+          ]}
+        >
+          <Select options={authorListData}/>
         </Form.Item>
       </Form>
     </Edit>
