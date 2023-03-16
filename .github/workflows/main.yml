@@ -20,6 +20,6 @@ jobs:
     
     - name: npm install, build
       run: |
-        ls -la
         npm install
+        ls -la
         npm run build --if-present
